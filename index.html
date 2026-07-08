@@ -11,25 +11,45 @@
     <h1>🧠 브레인 메모리 게임</h1>
 
     <section class="menu">
-      <label>게임 모드</label>
-      <select id="modeSelect">
-        <option value="brain">🟢 치매 예방 모드</option>
-        <option value="normal">🔵 일반 모드</option>
-        <option value="speed">🔴 스피드 모드</option>
-      </select>
+      <div class="row">
+        <label>게임 모드</label>
+        <select id="modeSelect">
+          <option value="brain">🟢 치매 예방 모드</option>
+          <option value="normal">🔵 일반 모드</option>
+          <option value="speed">🔴 스피드 모드</option>
+        </select>
+      </div>
+
+      <div class="row">
+        <label>레벨</label>
+        <select id="levelSelect">
+          <option value="easy">쉬움 4×4</option>
+          <option value="hard">어려움 6×6</option>
+        </select>
+      </div>
+
+      <div class="row">
+        <label>시간</label>
+        <select id="timeSelect">
+          <option value="30">30초</option>
+          <option value="60">1분</option>
+          <option value="90" selected>1분 30초</option>
+        </select>
+      </div>
 
       <div class="status">
         <div>⏱ 시간 <span id="time">90</span>초</div>
         <div>✅ 성공 <span id="score">0</span>/<span id="total">8</span></div>
-        <div>🏆 최고 <span id="best">0</span></div>
+        <div>🏆 최고 <span id="best">0</span>초</div>
       </div>
 
-      <p id="guide">치매 예방 모드: 카드가 5초 동안 보인 뒤 시작돼용.</p>
+      <p id="guide">카드를 외운 뒤 같은 그림을 찾아용.</p>
 
       <button id="startBtn">게임 시작</button>
     </section>
 
     <div id="countdown"></div>
+    <div id="stars">⭐ 별 평가: -</div>
 
     <section id="gameBoard" class="board"></section>
   </main>
