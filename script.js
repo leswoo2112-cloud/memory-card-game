@@ -1,12 +1,15 @@
 const board = document.getElementById("gameBoard");
 const startBtn = document.getElementById("startBtn");
 const modeSelect = document.getElementById("modeSelect");
+const levelSelect = document.getElementById("levelSelect");
+const timeSelect = document.getElementById("timeSelect");
 const timeText = document.getElementById("time");
 const scoreText = document.getElementById("score");
 const totalText = document.getElementById("total");
 const bestText = document.getElementById("best");
 const guide = document.getElementById("guide");
 const countdown = document.getElementById("countdown");
+const starsText = document.getElementById("stars");
 
 const icons = [
   "🍎", "🍌", "🍇", "🍓", "🐶", "🐱", "⚽", "🚗",
@@ -20,12 +23,14 @@ let lock = false;
 let score = 0;
 let totalPairs = 8;
 let time = 90;
+let maxTime = 90;
 let timer = null;
 let currentMode = "brain";
+let currentLevel = "easy";
 let started = false;
 
 function getBestKey() {
-  return "memoryBest_" + currentMode;
+  return "memoryBest_" + currentMode + "_" + currentLevel + "_" + maxTime;
 }
 
 function loadBest() {
@@ -36,32 +41,33 @@ function shuffle(array) {
   return array.sort(() => Math.random() - 0.5);
 }
 
-function setModeInfo() {
+function setGameInfo() {
   currentMode = modeSelect.value;
+  currentLevel = levelSelect.value;
+  maxTime = Number(timeSelect.value);
+  time = maxTime;
 
-  if (currentMode === "brain") {
-    time = 90;
-    totalPairs = 8;
-    guide.textContent = "🟢 치매 예방 모드: 5초 동안 카드를 보고 기억해용.";
-  } else if (currentMode === "normal") {
-    time = 60;
-    totalPairs = 8;
-    guide.textContent = "🔵 일반 모드: 3초 동안 보고 짝을 맞춰용.";
-  } else {
-    time = 45;
-    totalPairs = 18;
-    guide.textContent = "🔴 스피드 모드: 6×6 카드, 빠르게 맞춰용!";
-  }
+  totalPairs = currentLevel === "easy" ? 8 : 18;
 
   timeText.textContent = time;
   totalText.textContent = totalPairs;
   scoreText.textContent = 0;
+  starsText.textContent = "⭐ 별 평가: -";
+
+  if (currentMode === "brain") {
+    guide.textContent = "🟢 치매 예방 모드: 카드를 오래 보고 기억해용.";
+  } else if (currentMode === "normal") {
+    guide.textContent = "🔵 일반 모드: 같은 그림 2장을 찾아용.";
+  } else {
+    guide.textContent = "🔴 스피드 모드: 빠르게 맞추면 높은 별점!";
+  }
+
   loadBest();
 }
 
 function makeBoard() {
   board.innerHTML = "";
-  board.className = "board " + currentMode;
+  board.className = "board " + currentLevel;
 
   const selectedIcons = icons.slice(0, totalPairs);
   const gameIcons = shuffle([...selectedIcons, ...selectedIcons]);
@@ -83,30 +89,40 @@ function makeBoard() {
   });
 }
 
-function previewCards() {
-  const previewTime = currentMode === "brain" ? 5 : currentMode === "normal" ? 3 : 2;
-  let count = previewTime;
+function getPreviewTime() {
+  if (currentMode === "brain") return 5;
+  if (currentMode === "normal") return 3;
+  return 2;
+}
 
-  document.querySelectorAll(".card").forEach(card => {
+function previewCards() {
+  let count = getPreviewTime();
+  const cards = document.querySelectorAll(".card");
+
+  cards.forEach(card => {
     card.classList.add("open");
   });
 
-  countdown.textContent = count + "초 기억!";
+  countdown.textContent = count + "초 기억하세요!";
 
-  const previewTimer = setInterval(() => {
+  const preview = setInterval(() => {
     count--;
+
     if (count > 0) {
-      countdown.textContent = count + "초 기억!";
+      countdown.textContent = count + "초 기억하세요!";
     } else {
-      clearInterval(previewTimer);
-      document.querySelectorAll(".card").forEach(card => {
+      clearInterval(preview);
+
+      cards.forEach(card => {
         card.classList.remove("open");
       });
-      countdown.textContent = "START!";
+
+      countdown.textContent = "시작!";
+
       setTimeout(() => {
         countdown.textContent = "";
-        startTimer();
         started = true;
+        startTimer();
       }, 700);
     }
   }, 1000);
@@ -114,7 +130,7 @@ function previewCards() {
 
 function startGame() {
   clearInterval(timer);
-  setModeInfo();
+  setGameInfo();
 
   firstCard = null;
   secondCard = null;
@@ -184,17 +200,22 @@ function flipCard(card) {
   }
 }
 
+function getStars(usedTime) {
+  const ratio = usedTime / maxTime;
+
+  if (ratio <= 0.35) return "⭐⭐⭐";
+  if (ratio <= 0.65) return "⭐⭐";
+  return "⭐";
+}
+
 function endGame(success) {
   clearInterval(timer);
   started = false;
   startBtn.disabled = false;
 
   if (success) {
-    const usedTime =
-      currentMode === "brain" ? 90 - time :
-      currentMode === "normal" ? 60 - time :
-      45 - time;
-
+    const usedTime = maxTime - time;
+    const stars = getStars(usedTime);
     const best = Number(localStorage.getItem(getBestKey()) || 0);
 
     if (best === 0 || usedTime < best) {
@@ -202,14 +223,32 @@ function endGame(success) {
       bestText.textContent = usedTime;
     }
 
-    alert("🎉 성공!\n걸린 시간: " + usedTime + "초\n최고기록: " + bestText.textContent + "초");
+    starsText.textContent = "⭐ 별 평가: " + stars;
+
+    alert(
+      "🎉 성공!\n" +
+      "걸린 시간: " + usedTime + "초\n" +
+      "별 평가: " + stars + "\n" +
+      "최고기록: " + bestText.textContent + "초"
+    );
   } else {
+    starsText.textContent = "⭐ 별 평가: 실패";
     alert("⏰ 시간 종료!\n다시 도전해봐용!");
   }
 }
 
-modeSelect.addEventListener("change", setModeInfo);
+function resetPreview() {
+  clearInterval(timer);
+  started = false;
+  startBtn.disabled = false;
+  setGameInfo();
+  makeBoard();
+}
+
+modeSelect.addEventListener("change", resetPreview);
+levelSelect.addEventListener("change", resetPreview);
+timeSelect.addEventListener("change", resetPreview);
 startBtn.addEventListener("click", startGame);
 
-setModeInfo();
+setGameInfo();
 makeBoard();
