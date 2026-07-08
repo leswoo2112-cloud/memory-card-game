@@ -28,23 +28,27 @@ h1 {
 }
 
 .menu {
-  max-width: 760px;
-  margin: 0 auto 20px;
-  background: rgba(255, 255, 255, 0.8);
+  max-width: 800px;
+  margin: 0 auto 18px;
+  background: rgba(255, 255, 255, 0.88);
   padding: 18px;
   border-radius: 24px;
   box-shadow: 0 8px 25px #0002;
 }
 
+.row {
+  margin: 8px;
+}
+
 label {
-  font-size: 20px;
+  font-size: 19px;
   font-weight: bold;
+  margin-right: 8px;
 }
 
 select {
-  margin: 10px;
-  padding: 12px;
-  font-size: 18px;
+  padding: 11px;
+  font-size: 17px;
   border-radius: 14px;
 }
 
@@ -86,8 +90,15 @@ button:disabled {
 
 #countdown {
   font-size: 42px;
-  height: 55px;
+  height: 60px;
   font-weight: bold;
+  margin: 10px;
+}
+
+#stars {
+  font-size: 26px;
+  font-weight: bold;
+  margin: 10px;
 }
 
 .board {
@@ -97,12 +108,11 @@ button:disabled {
   justify-content: center;
 }
 
-.board.normal,
-.board.brain {
+.board.easy {
   grid-template-columns: repeat(4, 95px);
 }
 
-.board.speed {
+.board.hard {
   grid-template-columns: repeat(6, 75px);
 }
 
@@ -112,7 +122,7 @@ button:disabled {
   perspective: 1000px;
 }
 
-.board.speed .card {
+.board.hard .card {
   width: 75px;
   height: 75px;
 }
@@ -170,8 +180,7 @@ button:disabled {
     font-size: 30px;
   }
 
-  .board.normal,
-  .board.brain {
+  .board.easy {
     grid-template-columns: repeat(4, 75px);
   }
 
@@ -185,17 +194,17 @@ button:disabled {
     font-size: 34px;
   }
 
-  .board.speed {
+  .board.hard {
     grid-template-columns: repeat(6, 52px);
   }
 
-  .board.speed .card {
+  .board.hard .card {
     width: 52px;
     height: 52px;
   }
 
-  .board.speed .front,
-  .board.speed .back {
+  .board.hard .front,
+  .board.hard .back {
     font-size: 25px;
   }
 }
