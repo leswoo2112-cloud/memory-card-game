@@ -1,28 +1,39 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>🧠 메모리 카드 게임</title>
-
-<link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>브레인 메모리 게임</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
-
 <body>
+  <main class="app">
+    <h1>🧠 브레인 메모리 게임</h1>
 
-<h1>🧠 메모리 카드 게임</h1>
+    <section class="menu">
+      <label>게임 모드</label>
+      <select id="modeSelect">
+        <option value="brain">🟢 치매 예방 모드</option>
+        <option value="normal">🔵 일반 모드</option>
+        <option value="speed">🔴 스피드 모드</option>
+      </select>
 
-<div class="top">
-    <div>⏱ 시간 : <span id="time">60</span>초</div>
-    <div>🏆 성공 : <span id="score">0</span>/8</div>
-</div>
+      <div class="status">
+        <div>⏱ 시간 <span id="time">90</span>초</div>
+        <div>✅ 성공 <span id="score">0</span>/<span id="total">8</span></div>
+        <div>🏆 최고 <span id="best">0</span></div>
+      </div>
 
-<button id="startBtn">게임 시작</button>
+      <p id="guide">치매 예방 모드: 카드가 5초 동안 보인 뒤 시작돼용.</p>
 
-<div id="gameBoard"></div>
+      <button id="startBtn">게임 시작</button>
+    </section>
 
-<script src="script.js"></script>
+    <div id="countdown"></div>
 
+    <section id="gameBoard" class="board"></section>
+  </main>
+
+  <script src="script.js"></script>
 </body>
 </html>
